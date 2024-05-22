@@ -6,6 +6,7 @@ import org.example.springbootsveltekitrestback.domain.post.post.dto.PostDto;
 import org.example.springbootsveltekitrestback.domain.post.post.entity.Post;
 import org.example.springbootsveltekitrestback.domain.post.post.service.PostService;
 import org.example.springbootsveltekitrestback.global.rsData.RsData;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +21,7 @@ public class ApiV1PostController {
 
     @Getter
     public static class GetPostsResponseBody {
+        @NonNull
         private List<PostDto> items;
 
         public GetPostsResponseBody(List<Post> items) {
