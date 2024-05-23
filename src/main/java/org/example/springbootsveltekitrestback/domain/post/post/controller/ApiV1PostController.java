@@ -1,13 +1,16 @@
 package org.example.springbootsveltekitrestback.domain.post.post.controller;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.example.springbootsveltekitrestback.domain.post.post.dto.PostDto;
 import org.example.springbootsveltekitrestback.domain.post.post.entity.Post;
 import org.example.springbootsveltekitrestback.domain.post.post.service.PostService;
+import org.example.springbootsveltekitrestback.global.exceptions.GlobalException;
 import org.example.springbootsveltekitrestback.global.rsData.RsData;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -39,6 +42,26 @@ public class ApiV1PostController {
                 "200-1",
                 "성공",
                 new GetPostsResponseBody(items)
+        );
+    }
+
+    @AllArgsConstructor
+    @Getter
+    public static class GetPostResponseBody {
+        @NonNull
+        private PostDto item;
+    }
+
+    @GetMapping("/{id}")
+    public RsData<GetPostResponseBody> getPost(
+            @PathVariable("id") long id
+    ) {
+        Post post = postService.findById(id).orElseThrow(() -> new GlobalException("404-1", "존재하지 않는 글입니다."));
+
+        return RsData.of(
+                "200-1",
+                "성공",
+                new GetPostResponseBody(new PostDto(post))
         );
     }
 }
