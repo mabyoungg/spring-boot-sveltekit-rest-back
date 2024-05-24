@@ -1,7 +1,5 @@
 package org.example.springbootsveltekitrestback.domain.post.post.controller;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.example.springbootsveltekitrestback.domain.post.post.dto.PostDto;
 import org.example.springbootsveltekitrestback.domain.post.post.entity.Post;
@@ -22,16 +20,7 @@ import java.util.List;
 public class ApiV1PostController {
     private final PostService postService;
 
-    @Getter
-    public static class GetPostsResponseBody {
-        @NonNull
-        private List<PostDto> items;
-
-        public GetPostsResponseBody(List<Post> items) {
-            this.items = items.stream()
-                    .map(PostDto::new)
-                    .toList();
-        }
+    public record GetPostsResponseBody(@NonNull List<PostDto> items) {
     }
 
     @GetMapping("")
@@ -39,17 +28,15 @@ public class ApiV1PostController {
         List<Post> items = postService.findByPublished(true);
 
         return RsData.of(
-                "200-1",
-                "성공",
-                new GetPostsResponseBody(items)
+                new GetPostsResponseBody(
+                        items.stream()
+                                .map(PostDto::new)
+                                .toList()
+                )
         );
     }
 
-    @AllArgsConstructor
-    @Getter
-    public static class GetPostResponseBody {
-        @NonNull
-        private PostDto item;
+    public record GetPostResponseBody(@NonNull PostDto item) {
     }
 
     @GetMapping("/{id}")
@@ -59,8 +46,6 @@ public class ApiV1PostController {
         Post post = postService.findById(id).orElseThrow(GlobalException.E404::new);
 
         return RsData.of(
-                "200-1",
-                "성공",
                 new GetPostResponseBody(new PostDto(post))
         );
     }
