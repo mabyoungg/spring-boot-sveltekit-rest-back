@@ -23,6 +23,8 @@ public class PostDto {
     private String title;
     @NonNull
     private String body;
+    @NonNull
+    private boolean published;
 
     public PostDto(Post post) {
         this.id = post.getId();
@@ -32,5 +34,6 @@ public class PostDto {
         this.authorName = post.getAuthor().getName();
         this.title = post.getTitle();
         this.body = post.getBody();
+        this.published = post.isPublished();
     }
 }
