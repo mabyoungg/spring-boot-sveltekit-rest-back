@@ -1,5 +1,7 @@
 package org.example.springbootsveltekitrestback.domain.post.post.controller;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.example.springbootsveltekitrestback.domain.post.post.dto.PostDto;
 import org.example.springbootsveltekitrestback.domain.post.post.entity.Post;
@@ -7,10 +9,7 @@ import org.example.springbootsveltekitrestback.domain.post.post.service.PostServ
 import org.example.springbootsveltekitrestback.global.exceptions.GlobalException;
 import org.example.springbootsveltekitrestback.global.rsData.RsData;
 import org.springframework.lang.NonNull;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -36,6 +35,7 @@ public class ApiV1PostController {
         );
     }
 
+
     public record GetPostResponseBody(@NonNull PostDto item) {
     }
 
@@ -47,6 +47,26 @@ public class ApiV1PostController {
 
         return RsData.of(
                 new GetPostResponseBody(new PostDto(post))
+        );
+    }
+
+    public record EditRequestBody(@NotBlank String title, @NotBlank String body) {
+    }
+
+    public record EditResponseBody(@NonNull PostDto item) {
+    }
+
+    @PutMapping(value = "/{id}")
+    public RsData<EditResponseBody> edit(
+            @PathVariable long id,
+            @Valid @RequestBody EditRequestBody requestBody
+    ) {
+        Post post = postService.findById(id).orElseThrow(GlobalException.E404::new);
+
+        postService.edit(post, requestBody.title, requestBody.body);
+
+        return RsData.of(
+                new EditResponseBody(new PostDto(post))
         );
     }
 }
