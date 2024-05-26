@@ -13,6 +13,7 @@ import org.example.springbootsveltekitrestback.global.rq.Rq;
 import org.example.springbootsveltekitrestback.global.rsData.RsData;
 import org.example.springbootsveltekitrestback.standard.base.Empty;
 import org.springframework.lang.NonNull;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/v1/posts")
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ApiV1PostController {
     private final PostService postService;
     private final Rq rq;
@@ -78,6 +80,7 @@ public class ApiV1PostController {
     }
 
     @PutMapping( "/{id}")
+    @Transactional
     public RsData<EditResponseBody> edit(
             @PathVariable long id,
             @Valid @RequestBody EditRequestBody requestBody
@@ -96,6 +99,7 @@ public class ApiV1PostController {
     }
 
     @DeleteMapping( "/{id}")
+    @Transactional
     public RsData<Empty> delete(
             @PathVariable long id
     ) {

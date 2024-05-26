@@ -9,11 +9,13 @@ import org.example.springbootsveltekitrestback.global.rq.Rq;
 import org.example.springbootsveltekitrestback.global.rsData.RsData;
 import org.example.springbootsveltekitrestback.standard.base.Empty;
 import org.springframework.lang.NonNull;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/members")
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ApiV1MemberController {
     private final MemberService memberService;
     private final Rq rq;
