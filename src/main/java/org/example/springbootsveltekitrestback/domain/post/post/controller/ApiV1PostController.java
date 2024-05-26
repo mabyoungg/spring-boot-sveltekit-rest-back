@@ -10,6 +10,7 @@ import org.example.springbootsveltekitrestback.domain.post.post.service.PostServ
 import org.example.springbootsveltekitrestback.global.exceptions.GlobalException;
 import org.example.springbootsveltekitrestback.global.rq.Rq;
 import org.example.springbootsveltekitrestback.global.rsData.RsData;
+import org.example.springbootsveltekitrestback.standard.base.Empty;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
@@ -75,7 +76,7 @@ public class ApiV1PostController {
     public record EditResponseBody(@NonNull PostDto item) {
     }
 
-    @PutMapping(value = "/{id}")
+    @PutMapping( "/{id}")
     public RsData<EditResponseBody> edit(
             @PathVariable long id,
             @Valid @RequestBody EditRequestBody requestBody
@@ -90,6 +91,22 @@ public class ApiV1PostController {
         return RsData.of(
                 "%d번 글이 수정되었습니다.".formatted(id),
                 new EditResponseBody(new PostDto(post))
+        );
+    }
+
+    @DeleteMapping( "/{id}")
+    public RsData<Empty> delete(
+            @PathVariable long id
+    ) {
+        Post post = postService.findById(id).orElseThrow(GlobalException.E404::new);
+
+        if (!postService.canDelete(rq.getMember(), post))
+            throw new GlobalException("403-1", "권한이 없습니다.");
+
+        postService.delete(post);
+
+        return RsData.of(
+                "%d번 글이 삭제되었습니다.".formatted(id)
         );
     }
 }

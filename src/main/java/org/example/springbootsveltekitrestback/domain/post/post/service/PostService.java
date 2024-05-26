@@ -68,4 +68,9 @@ public class PostService {
 
         return actor.equals(post.getAuthor());
     }
+
+    @Transactional
+    public void delete(Post post) {
+        postRepository.delete(post);
+    }
 }
