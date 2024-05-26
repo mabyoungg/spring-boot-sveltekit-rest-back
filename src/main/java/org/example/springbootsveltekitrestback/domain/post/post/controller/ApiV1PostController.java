@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.example.springbootsveltekitrestback.domain.post.post.dto.PostDto;
+import org.example.springbootsveltekitrestback.domain.post.post.dto.PostWithBodyDto;
 import org.example.springbootsveltekitrestback.domain.post.post.entity.Post;
 import org.example.springbootsveltekitrestback.domain.post.post.service.PostService;
 import org.example.springbootsveltekitrestback.global.exceptions.GlobalException;
@@ -32,11 +33,11 @@ public class ApiV1PostController {
         List<Post> items = postService.findByPublished(true);
         List<PostDto> _items = items.stream()
                 .map(post -> {
-                    PostDto postDto = new PostDto(post);
-                    postDto.setActorCanRead(postService.canRead(rq.getMember(), post));
-                    postDto.setActorCanEdit(postService.canEdit(rq.getMember(), post));
-                    postDto.setActorCanDelete(postService.canDelete(rq.getMember(), post));
-                    return postDto;
+                    PostDto dto = new PostDto(post);
+                    dto.setActorCanRead(postService.canRead(rq.getMember(), post));
+                    dto.setActorCanEdit(postService.canEdit(rq.getMember(), post));
+                    dto.setActorCanDelete(postService.canDelete(rq.getMember(), post));
+                    return dto;
                 })
                 .collect(Collectors.toList());
 
@@ -48,7 +49,7 @@ public class ApiV1PostController {
     }
 
 
-    public record GetPostResponseBody(@NonNull PostDto item) {
+    public record GetPostResponseBody(@NonNull PostWithBodyDto item) {
     }
 
     @GetMapping("/{id}")
@@ -60,20 +61,20 @@ public class ApiV1PostController {
         if (!postService.canRead(rq.getMember(), post))
             throw new GlobalException("403-1", "권한이 없습니다.");
 
-        PostDto postDto = new PostDto(post);
-        postDto.setActorCanRead(postService.canRead(rq.getMember(), post));
-        postDto.setActorCanEdit(postService.canEdit(rq.getMember(), post));
-        postDto.setActorCanDelete(postService.canDelete(rq.getMember(), post));
+        PostWithBodyDto dto = new PostWithBodyDto(post);
+        dto.setActorCanRead(postService.canRead(rq.getMember(), post));
+        dto.setActorCanEdit(postService.canEdit(rq.getMember(), post));
+        dto.setActorCanDelete(postService.canDelete(rq.getMember(), post));
 
         return RsData.of(
-                new GetPostResponseBody(postDto)
+                new GetPostResponseBody(dto)
         );
     }
 
     public record EditRequestBody(@NotBlank String title, @NotBlank String body, @NotNull boolean published) {
     }
 
-    public record EditResponseBody(@NonNull PostDto item) {
+    public record EditResponseBody(@NonNull PostWithBodyDto item) {
     }
 
     @PutMapping( "/{id}")
@@ -90,7 +91,7 @@ public class ApiV1PostController {
 
         return RsData.of(
                 "%d번 글이 수정되었습니다.".formatted(id),
-                new EditResponseBody(new PostDto(post))
+                new EditResponseBody(new PostWithBodyDto(post))
         );
     }
 
