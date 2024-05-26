@@ -22,9 +22,12 @@ import java.util.Optional;
 public class Rq {
     private final HttpServletRequest req;
     private final HttpServletResponse resp;
-    private Member member;
     @PersistenceContext
     private EntityManager entityManager;
+    private SecurityUser user;
+    private Member member;
+    private Boolean isLogin;
+    private Boolean isAdmin;
 
     public void setHeader(String name, String value) {
         resp.setHeader(name, value);
@@ -152,6 +155,7 @@ public class Rq {
 
         if (member == null) {
             member = entityManager.getReference(Member.class, getUser().getId());
+            member.setAdmin(isAdmin());
         }
 
         return member;
@@ -160,10 +164,14 @@ public class Rq {
     public boolean isAdmin() {
         if (isLogout()) return false;
 
-        return getUser()
-                .getAuthorities()
-                .stream()
-                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+        if (isAdmin == null) {
+            isAdmin = getUser()
+                    .getAuthorities()
+                    .stream()
+                    .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+        }
+
+        return isAdmin;
     }
 
     public boolean isLogout() {
@@ -171,15 +179,23 @@ public class Rq {
     }
 
     public boolean isLogin() {
-        return getUser() != null;
+        if (isLogin == null) getUser();
+
+        return isLogin;
     }
 
     private SecurityUser getUser() {
-        return Optional.ofNullable(SecurityContextHolder.getContext())
-                .map(context -> context.getAuthentication())
-                .filter(authentication -> authentication.getPrincipal() instanceof SecurityUser)
-                .map(authentication -> (SecurityUser) authentication.getPrincipal())
-                .orElse(null);
+        if (isLogin == null) {
+            user = Optional.ofNullable(SecurityContextHolder.getContext())
+                    .map(context -> context.getAuthentication())
+                    .filter(authentication -> authentication.getPrincipal() instanceof SecurityUser)
+                    .map(authentication -> (SecurityUser) authentication.getPrincipal())
+                    .orElse(null);
+
+            isLogin = user != null;
+        }
+
+        return user;
     }
 
     public void setLogin(SecurityUser securityUser) {

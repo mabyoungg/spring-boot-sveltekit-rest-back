@@ -26,6 +26,9 @@ public class Member extends BaseTime {
     private String password;
     @Column(unique = true)
     private String refreshToken;
+    // 캐시 데이터
+    @Transient
+    private Boolean _isAdmin;
 
     @Transient
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -48,11 +51,23 @@ public class Member extends BaseTime {
         return authorities;
     }
 
+    @Transient
     public String getName() {
         return username;
     }
 
+    @Transient
     public boolean isAdmin() {
-        return List.of("system", "admin").contains(username);
+        if (this._isAdmin != null)
+            return this._isAdmin;
+
+        this._isAdmin = List.of("system", "admin").contains(getUsername());
+
+        return this._isAdmin;
+    }
+
+    @Transient
+    public void setAdmin(boolean admin) {
+        this._isAdmin = admin;
     }
 }
