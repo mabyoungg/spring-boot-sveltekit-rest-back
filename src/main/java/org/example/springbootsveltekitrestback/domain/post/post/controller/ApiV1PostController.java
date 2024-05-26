@@ -8,6 +8,7 @@ import org.example.springbootsveltekitrestback.domain.post.post.dto.PostDto;
 import org.example.springbootsveltekitrestback.domain.post.post.entity.Post;
 import org.example.springbootsveltekitrestback.domain.post.post.service.PostService;
 import org.example.springbootsveltekitrestback.global.exceptions.GlobalException;
+import org.example.springbootsveltekitrestback.global.rq.Rq;
 import org.example.springbootsveltekitrestback.global.rsData.RsData;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ApiV1PostController {
     private final PostService postService;
+    private final Rq rq;
 
     public record GetPostsResponseBody(@NonNull List<PostDto> items) {
     }
@@ -46,6 +48,9 @@ public class ApiV1PostController {
     ) {
         Post post = postService.findById(id).orElseThrow(GlobalException.E404::new);
 
+        if (!postService.canRead(rq.getMember(), post))
+            throw new GlobalException("403-1", "권한이 없습니다.");
+
         return RsData.of(
                 new GetPostResponseBody(new PostDto(post))
         );
@@ -63,6 +68,9 @@ public class ApiV1PostController {
             @Valid @RequestBody EditRequestBody requestBody
     ) {
         Post post = postService.findById(id).orElseThrow(GlobalException.E404::new);
+
+        if (!postService.canEdit(rq.getMember(), post))
+            throw new GlobalException("403-1", "권한이 없습니다.");
 
         postService.edit(post, requestBody.title, requestBody.body, requestBody.published);
 

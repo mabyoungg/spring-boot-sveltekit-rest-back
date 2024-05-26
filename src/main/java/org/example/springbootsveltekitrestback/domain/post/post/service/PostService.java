@@ -42,4 +42,21 @@ public class PostService {
         post.setBody(body);
         post.setPublished(published);
     }
+
+    public boolean canRead(Member actor, Post post) {
+        if (actor == null) return false;
+        if (post == null) return false;
+
+        if (actor.isAdmin()) return true;
+        if (post.isPublished()) return true;
+
+        return actor.equals(post.getAuthor());
+    }
+
+    public boolean canEdit(Member actor, Post post) {
+        if (actor == null) return false;
+        if (post == null) return false;
+
+        return actor.equals(post.getAuthor());
+    }
 }
