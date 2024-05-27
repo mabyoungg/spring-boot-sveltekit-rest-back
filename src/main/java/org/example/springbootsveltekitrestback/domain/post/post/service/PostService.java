@@ -20,7 +20,7 @@ public class PostService {
     private final PostDetailRepository postDetailRepository;
 
     @Transactional
-    public void write(Member author, String title, String body, boolean published) {
+    public Post write(Member author, String title, String body, boolean published) {
         Post post = Post.builder()
                 .author(author)
                 .title(title)
@@ -29,7 +29,17 @@ public class PostService {
 
         postRepository.save(post);
 
+        post.setDetailBody(
+                PostDetail
+                        .builder()
+                        .post(post)
+                        .name("common__body")
+                        .build()
+        );
+
         saveBody(post, body);
+
+        return post;
     }
 
     private void saveBody(Post post, String body) {
@@ -62,6 +72,11 @@ public class PostService {
 
     public Optional<Post> findById(long id) {
         return postRepository.findById(id);
+    }
+
+    @Transactional
+    public void delete(Post post) {
+        postRepository.delete(post);
     }
 
     @Transactional
@@ -98,8 +113,27 @@ public class PostService {
         return actor.equals(post.getAuthor());
     }
 
+    public Boolean canLike(Member actor, Post post) {
+        if (actor == null) return false;
+        if (post == null) return false;
+
+        return !post.hasLike(actor);
+    }
+
+    public Boolean canCancelLike(Member actor, Post post) {
+        if (actor == null) return false;
+        if (post == null) return false;
+
+        return post.hasLike(actor);
+    }
+
     @Transactional
-    public void delete(Post post) {
-        postRepository.delete(post);
+    public void like(Member actor, Post post) {
+        post.addLike(actor);
+    }
+
+    @Transactional
+    public void cancelLike(Member actor, Post post) {
+        post.deleteLike(actor);
     }
 }

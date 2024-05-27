@@ -23,7 +23,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleException(Exception ex) {
-        // if (rq.isApi()) throw ex;
+        // if (!rq.isApi()) throw ex;
 
         return handleApiException(ex);
     }
