@@ -33,6 +33,11 @@ public class ApiV1PostController {
     @GetMapping("")
     public RsData<GetPostsResponseBody> getPosts() {
         List<Post> items = postService.findByPublished(true);
+
+        if (rq.isLogin()) {
+            postService.loadLikeMap(items, rq.getMember());
+        }
+
         List<PostDto> _items = items.stream()
                 .map(this::postToDto)
                 .collect(Collectors.toList());
