@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Transient;
 import lombok.*;
 import org.example.springbootsveltekitrestback.standard.base.BaseTime;
+import org.example.springbootsveltekitrestback.standard.util.Ut;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
@@ -26,6 +27,8 @@ public class Member extends BaseTime {
     private String password;
     @Column(unique = true)
     private String refreshToken;
+    private String nickname;
+    private String profileImgUrl;
     // 캐시 데이터
     @Transient
     private Boolean _isAdmin;
@@ -53,7 +56,7 @@ public class Member extends BaseTime {
 
     @Transient
     public String getName() {
-        return username;
+        return nickname;
     }
 
     @Transient
@@ -69,5 +72,9 @@ public class Member extends BaseTime {
     @Transient
     public void setAdmin(boolean admin) {
         this._isAdmin = admin;
+    }
+
+    public String getProfileImgUrlOrDefault() {
+        return Ut.str.hasLength(profileImgUrl) ? profileImgUrl : "https://placehold.co/640x640?text=O_O";
     }
 }
