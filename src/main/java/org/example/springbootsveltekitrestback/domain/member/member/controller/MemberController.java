@@ -1,6 +1,5 @@
 package org.example.springbootsveltekitrestback.domain.member.member.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.example.springbootsveltekitrestback.global.rq.Rq;
 import org.springframework.stereotype.Controller;
@@ -15,7 +14,6 @@ public class MemberController {
     private final Rq rq;
 
     @GetMapping("/socialLogin/{providerTypeCode}")
-    @Operation(summary = "소셜 로그인")
     public String socialLogin(String redirectUrl, @PathVariable String providerTypeCode) {
         if (rq.isFrontUrl(redirectUrl)) {
             rq.setCookie("redirectUrlAfterSocialLogin", redirectUrl, 60 * 10);
