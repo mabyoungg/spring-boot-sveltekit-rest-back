@@ -29,6 +29,8 @@ public class PostCommentDto {
     @Setter
     private Boolean actorCanDelete;
 
+    private boolean editing;
+
     public PostCommentDto(PostComment postComment) {
         this.id = postComment.getId();
         this.createDate = postComment.getCreateDate();
