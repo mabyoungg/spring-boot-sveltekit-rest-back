@@ -1,5 +1,9 @@
 package org.example.springbootsveltekitrestback.domain.post.postComment.controller;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.example.springbootsveltekitrestback.domain.post.post.entity.Post;
 import org.example.springbootsveltekitrestback.domain.post.post.service.PostService;
@@ -25,6 +29,8 @@ public class ApiV1PostCommentController {
     private final Rq rq;
     private final PostService postService;
     private final PostCommentService postCommentService;
+    @PersistenceContext
+    private EntityManager entityManager;
 
 
     public record GetPostCommentsResponseBody(
@@ -69,6 +75,31 @@ public class ApiV1PostCommentController {
 
         return RsData.of(
                 "댓글이 삭제되었습니다."
+        );
+    }
+
+    public record WriteRequestBody(@NotBlank String body) {
+    }
+
+    public record WriteResponseBody(@NonNull PostCommentDto item) {
+    }
+
+    @PostMapping("/{postId}")
+    @Transactional
+    public RsData<WriteResponseBody> write(
+            @PathVariable long postId,
+            @Valid @RequestBody WriteRequestBody body
+    ) {
+        Post post = postService.findById(postId).orElseThrow(GlobalException.E404::new);
+
+        PostComment postComment = postService.writeComment(rq.getMember(), post, body.body);
+
+        // postComment.getId() null, flush() DB 반영
+        entityManager.flush();
+
+        return RsData.of(
+                "댓글이 작성되었습니다.",
+                new WriteResponseBody(postCommentToDto(postComment))
         );
     }
 
