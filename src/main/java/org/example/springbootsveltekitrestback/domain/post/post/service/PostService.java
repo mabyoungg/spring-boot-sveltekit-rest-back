@@ -6,6 +6,7 @@ import org.example.springbootsveltekitrestback.domain.post.post.entity.Post;
 import org.example.springbootsveltekitrestback.domain.post.post.entity.PostDetail;
 import org.example.springbootsveltekitrestback.domain.post.post.repository.PostDetailRepository;
 import org.example.springbootsveltekitrestback.domain.post.post.repository.PostRepository;
+import org.example.springbootsveltekitrestback.domain.post.postComment.entity.PostComment;
 import org.example.springbootsveltekitrestback.domain.post.postLike.entity.PostLike;
 import org.example.springbootsveltekitrestback.domain.post.postLike.repository.PostLikeRepository;
 import org.example.springbootsveltekitrestback.global.rsData.RsData;
@@ -195,5 +196,10 @@ public class PostService {
                 isNew.get() ? "임시글이 생성되었습니다." : "%d번 임시글을 불러왔습니다.".formatted(post.getId()),
                 post
         );
+    }
+
+    @Transactional
+    public void deleteComment(Post post, PostComment postComment) {
+        post.deleteComment(postComment);
     }
 }
