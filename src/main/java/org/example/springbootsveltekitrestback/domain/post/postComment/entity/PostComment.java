@@ -21,6 +21,7 @@ public class PostComment extends BaseTime {
     private Post post;
     @ManyToOne(fetch = LAZY)
     private Member author;
+    private boolean published;
 
     private String body;
 }
