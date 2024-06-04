@@ -9,12 +9,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @ControllerAdvice
 @RequiredArgsConstructor
@@ -52,7 +55,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(GlobalException.class)
-    @ResponseStatus // error 내용의 스키마를 타입스크립트
+    @ResponseStatus(HttpStatus.BAD_REQUEST) // error 내용의 스키마를 타입스크립트
+    @RequestMapping(produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<RsData<Empty>> handle(GlobalException ex) {
         HttpStatus status = HttpStatus.valueOf(ex.getRsData().getStatusCode());
         rq.setStatusCode(ex.getRsData().getStatusCode());

@@ -2,6 +2,7 @@ package org.example.springbootsveltekitrestback.global.initData;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.springbootsveltekitrestback.domain.member.member.entity.Member;
 import org.example.springbootsveltekitrestback.domain.member.member.service.MemberService;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
@@ -20,8 +21,11 @@ public class All {
         return args -> {
             if (memberService.findByUsername("system").isPresent()) return;
 
-            memberService.join("system", "1234");
-            memberService.join("admin", "1234");
+            Member memberSystem = memberService.join("system", "1234").getData();
+            memberSystem.setRefreshToken("system");
+
+            Member memberAdmin = memberService.join("admin", "1234").getData();
+            memberAdmin.setRefreshToken("admin");
         };
     }
 }

@@ -1,5 +1,8 @@
 package org.example.springbootsveltekitrestback.domain.post.post.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -19,8 +22,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.springframework.http.MediaType.ALL_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 @RestController
-@RequestMapping("/api/v1/posts")
+@RequestMapping(value = "/api/v1/posts", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+@Tag(name = "ApiV1PostController", description = "글 CRUD 컨트롤러")
+@SecurityRequirement(name = "bearerAuth")
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class ApiV1PostController {
@@ -31,7 +39,8 @@ public class ApiV1PostController {
     }
 
     @Transactional
-    @PostMapping("/temp")
+    @PostMapping(value = "/temp", consumes = ALL_VALUE)
+    @Operation(summary = "임시 글 생성")
     public RsData<MakeTempResponseBody> makeTemp() {
         RsData<Post> findTempOrMakeRsData = postService.findTempOrMake(rq.getMember());
 
@@ -46,7 +55,8 @@ public class ApiV1PostController {
     public record GetPostsResponseBody(@NonNull List<PostDto> items) {
     }
 
-    @GetMapping("")
+    @GetMapping(value = "", consumes = ALL_VALUE)
+    @Operation(summary = "글 다건조회")
     public RsData<GetPostsResponseBody> getPosts() {
         List<Post> items = postService.findByPublished(true);
 
@@ -69,7 +79,8 @@ public class ApiV1PostController {
     public record GetPostResponseBody(@NonNull PostWithBodyDto item) {
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}", consumes = ALL_VALUE)
+    @Operation(summary = "글 단건조회")
     public RsData<GetPostResponseBody> getPost(
             @PathVariable("id") long id
     ) {
@@ -91,7 +102,8 @@ public class ApiV1PostController {
     public record EditResponseBody(@NonNull PostWithBodyDto item) {
     }
 
-    @PutMapping( "/{id}")
+    @PutMapping("/{id}")
+    @Operation(summary = "글 편집")
     @Transactional
     public RsData<EditResponseBody> edit(
             @PathVariable long id,
@@ -106,11 +118,12 @@ public class ApiV1PostController {
 
         return RsData.of(
                 "%d번 글이 수정되었습니다.".formatted(id),
-                new EditResponseBody(new PostWithBodyDto(post))
+                new EditResponseBody(postToWithBodyDto(post))
         );
     }
 
-    @DeleteMapping( "/{id}")
+    @DeleteMapping(value = "/{id}", consumes = ALL_VALUE)
+    @Operation(summary = "글 삭제")
     @Transactional
     public RsData<Empty> delete(
             @PathVariable long id
@@ -130,7 +143,8 @@ public class ApiV1PostController {
     public record LikeResponseBody(@NonNull PostDto item) {
     }
 
-    @PostMapping( "/{id}/like")
+    @PostMapping(value = "/{id}/like", consumes = ALL_VALUE)
+    @Operation(summary = "글 추천")
     @Transactional
     public RsData<LikeResponseBody> like(
             @PathVariable long id
@@ -154,7 +168,8 @@ public class ApiV1PostController {
     public record CancelLikeResponseBody(@NonNull PostDto item) {
     }
 
-    @DeleteMapping( "/{id}/cancelLike")
+    @DeleteMapping(value = "/{id}/cancelLike", consumes = ALL_VALUE)
+    @Operation(summary = "글 추천취소")
     @Transactional
     public RsData<CancelLikeResponseBody> cancelLike(
             @PathVariable long id
