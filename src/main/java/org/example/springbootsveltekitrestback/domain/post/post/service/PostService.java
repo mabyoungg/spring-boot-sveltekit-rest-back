@@ -10,6 +10,9 @@ import org.example.springbootsveltekitrestback.domain.post.postLike.entity.PostL
 import org.example.springbootsveltekitrestback.domain.post.postLike.repository.PostLikeRepository;
 import org.example.springbootsveltekitrestback.global.rsData.RsData;
 import org.example.springbootsveltekitrestback.global.transactionCache.TransactionCache;
+import org.example.springbootsveltekitrestback.standard.base.KwTypeV1;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -195,5 +198,9 @@ public class PostService {
                 isNew.get() ? "임시글이 생성되었습니다." : "%d번 임시글을 불러왔습니다.".formatted(post.getId()),
                 post
         );
+    }
+
+    public Page<Post> findByKw(KwTypeV1 kwType, String kw, Member author, Boolean published, Pageable pageable) {
+        return postRepository.findByKw(kwType, kw, author, published, pageable);
     }
 }
