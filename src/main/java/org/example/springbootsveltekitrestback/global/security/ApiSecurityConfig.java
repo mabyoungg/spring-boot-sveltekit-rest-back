@@ -1,6 +1,8 @@
 package org.example.springbootsveltekitrestback.global.security;
 
 import lombok.RequiredArgsConstructor;
+import org.example.springbootsveltekitrestback.global.rsData.RsData;
+import org.example.springbootsveltekitrestback.standard.util.Ut;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -37,6 +39,20 @@ public class ApiSecurityConfig {
                         sessionManagement -> sessionManagement
                                 .sessionCreationPolicy(
                                         SessionCreationPolicy.STATELESS
+                                )
+                )
+                .exceptionHandling(
+                        exceptionHandling -> exceptionHandling
+                                .authenticationEntryPoint(
+                                        (request, response, authException) -> {
+                                            response.setContentType("application/json;charset=UTF-8");
+                                            response.setStatus(403);
+                                            response.getWriter().write(
+                                                    Ut.json.toString(
+                                                            RsData.of("403-1", request.getRequestURI() + ", " + authException.getLocalizedMessage())
+                                                    )
+                                            );
+                                        }
                                 )
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
