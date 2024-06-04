@@ -97,11 +97,11 @@ public class PostService {
     }
 
     public boolean canRead(Member actor, Post post) {
-        if (actor == null) return false;
         if (post == null) return false;
-
-        if (actor.isAdmin()) return true;
         if (post.isPublished()) return true;
+
+        if (actor == null) return false;
+        if (actor.isAdmin()) return true;
 
         return actor.equals(post.getAuthor());
     }
