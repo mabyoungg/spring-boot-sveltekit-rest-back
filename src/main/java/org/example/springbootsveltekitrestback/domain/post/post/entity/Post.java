@@ -7,6 +7,7 @@ import org.example.springbootsveltekitrestback.domain.post.postComment.entity.Po
 import org.example.springbootsveltekitrestback.domain.post.postLike.entity.PostLike;
 import org.example.springbootsveltekitrestback.standard.base.BaseTime;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -119,5 +120,9 @@ public class Post extends BaseTime {
         return comments.stream()
                 .filter(it -> it.getId().equals(postCommentId))
                 .findFirst();
+    }
+
+    public void setModified() {
+        setModifyDate(LocalDateTime.now());
     }
 }
