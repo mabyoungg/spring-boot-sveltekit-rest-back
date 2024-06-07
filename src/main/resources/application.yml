@@ -63,8 +63,17 @@ custom:
     backUrl: "http://${custom.dev.cookieDomain}:${server.port}"
   prod:
     cookieDomain: www.rest.kro.kr
-    frontUrl: "https://${custom.production.cookieDomain}"
-    backUrl: "https://api.${custom.production.cookieDomain}"
+    frontUrl: "https://${custom.prod.cookieDomain}"
+    backUrl: "https://api.${custom.prod.cookieDomain}"
+    database:
+      password: NEED_TO_SECRET
+    members:
+      system:
+        password: NEED_TO_SECRET
+      admin:
+        password: NEED_TO_SECRET
+      garage:
+        password: NEED_TO_SECRET
   site:
     cookieDomain: "${custom.dev.cookieDomain}"
     frontUrl: "${custom.dev.frontUrl}"

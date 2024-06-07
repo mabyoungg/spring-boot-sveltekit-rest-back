@@ -1,5 +1,6 @@
 package org.example.springbootsveltekitrestback.global.rsData;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -46,11 +47,13 @@ public class RsData<T> {
     }
 
     @NonNull
+    @JsonIgnore
     public boolean isSuccess() {
         return getStatusCode() >= 200 && getStatusCode() < 400;
     }
 
     @NonNull
+    @JsonIgnore
     public boolean isFail() {
         return !isSuccess();
     }
