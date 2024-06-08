@@ -13,6 +13,7 @@ import static lombok.AccessLevel.PRIVATE;
 @NoArgsConstructor(access = PRIVATE)
 @Getter
 public class RsData<T> {
+    public static final RsData<Empty> OK = of("200-1", "성공", new Empty());
     @NonNull
     String resultCode;
     @NonNull

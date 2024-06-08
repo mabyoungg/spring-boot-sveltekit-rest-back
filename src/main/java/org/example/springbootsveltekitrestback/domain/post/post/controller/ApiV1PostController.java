@@ -89,6 +89,33 @@ public class ApiV1PostController {
         );
     }
 
+    public record GetMineResponseBody(@NonNull PageDto<PostDto> itemPage) {
+    }
+
+    @GetMapping(value = "/mine", consumes = ALL_VALUE)
+    @Operation(summary = "내글 다건조회")
+    public RsData<GetMineResponseBody> getMine(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "") String kw,
+            @RequestParam(defaultValue = "ALL") KwTypeV1 kwType
+    ) {
+        List<Sort.Order> sorts = new ArrayList<>();
+        sorts.add(Sort.Order.desc("id"));
+        Pageable pageable = PageRequest.of(page - 1, AppConfig.getBasePageSize(), Sort.by(sorts));
+        Page<Post> itemPage = postService.findByKw(kwType, kw, rq.getMember(), null, pageable);
+
+        if (rq.isLogin()) {
+            postService.loadLikeMap(itemPage.getContent(), rq.getMember());
+        }
+
+        Page<PostDto> _itemPage = itemPage.map(this::postToDto);
+
+        return RsData.of(
+                new GetMineResponseBody(
+                        new PageDto<>(_itemPage)
+                )
+        );
+    }
 
     public record GetPostResponseBody(@NonNull PostWithBodyDto item) {
     }
