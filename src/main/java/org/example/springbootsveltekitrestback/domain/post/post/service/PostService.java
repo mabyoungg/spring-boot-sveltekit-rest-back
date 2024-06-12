@@ -98,9 +98,10 @@ public class PostService {
     }
 
     @Transactional
-    public void edit(Post post, String title, String body, boolean published) {
+    public void edit(Post post, String title, String body, boolean published, boolean listed) {
         post.setTitle(title);
         post.setPublished(published);
+        post.setListed(listed);
 
         editBody(post, body);
     }
@@ -206,8 +207,8 @@ public class PostService {
         );
     }
 
-    public Page<Post> findByKw(KwTypeV1 kwType, String kw, Member author, Boolean published, Pageable pageable) {
-        return postRepository.findByKw(kwType, kw, author, published, pageable);
+    public Page<Post> findByKw(KwTypeV1 kwType, String kw, Member author, Boolean published, Boolean listed, Pageable pageable) {
+        return postRepository.findByKw(kwType, kw, author, published, listed, pageable);
     }
 
     @Transactional

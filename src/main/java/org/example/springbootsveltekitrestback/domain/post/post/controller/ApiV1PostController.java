@@ -74,7 +74,7 @@ public class ApiV1PostController {
         List<Sort.Order> sorts = new ArrayList<>();
         sorts.add(Sort.Order.desc("id"));
         Pageable pageable = PageRequest.of(page - 1, AppConfig.getBasePageSize(), Sort.by(sorts));
-        Page<Post> itemPage = postService.findByKw(kwType, kw, null, true, pageable);
+        Page<Post> itemPage = postService.findByKw(kwType, kw, null, true, true, pageable);
 
         if (rq.isLogin()) {
             postService.loadLikeMap(itemPage.getContent(), rq.getMember());
@@ -102,7 +102,7 @@ public class ApiV1PostController {
         List<Sort.Order> sorts = new ArrayList<>();
         sorts.add(Sort.Order.desc("id"));
         Pageable pageable = PageRequest.of(page - 1, AppConfig.getBasePageSize(), Sort.by(sorts));
-        Page<Post> itemPage = postService.findByKw(kwType, kw, rq.getMember(), null, pageable);
+        Page<Post> itemPage = postService.findByKw(kwType, kw, rq.getMember(), null, null, pageable);
 
         if (rq.isLogin()) {
             postService.loadLikeMap(itemPage.getContent(), rq.getMember());
@@ -137,7 +137,12 @@ public class ApiV1PostController {
         );
     }
 
-    public record EditRequestBody(@NotBlank String title, @NotBlank String body, @NotNull boolean published) {
+    public record EditRequestBody(
+            @NotBlank String title,
+            @NotBlank String body,
+            @NotNull boolean published,
+            @NotNull boolean listed
+    ) {
     }
 
     public record EditResponseBody(@NonNull PostWithBodyDto item) {
@@ -155,7 +160,7 @@ public class ApiV1PostController {
         if (!postService.canEdit(rq.getMember(), post))
             throw new GlobalException("403-1", "권한이 없습니다.");
 
-        postService.edit(post, requestBody.title, requestBody.body, requestBody.published);
+        postService.edit(post, requestBody.title, requestBody.body, requestBody.published, requestBody.listed);
 
         return RsData.of(
                 "%d번 글이 수정되었습니다.".formatted(id),

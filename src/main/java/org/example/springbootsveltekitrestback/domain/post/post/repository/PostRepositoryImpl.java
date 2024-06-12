@@ -22,7 +22,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Page<Post> findByKw(KwTypeV1 kwType, String kw, Member author, Boolean published, Pageable pageable) {
+    public Page<Post> findByKw(KwTypeV1 kwType, String kw, Member author, Boolean published, Boolean listed, Pageable pageable) {
         BooleanBuilder builder = new BooleanBuilder();
 
         if (author != null) {
@@ -32,6 +32,11 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
         if (published != null) {
             builder.and(post.published.eq(published));
         }
+
+        if (listed != null) {
+            builder.and(post.listed.eq(listed));
+        }
+
 
         if (kw != null && !kw.isBlank()) {
             applyKeywordFilter(kwType, kw, builder);
