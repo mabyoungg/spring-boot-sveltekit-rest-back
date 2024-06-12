@@ -27,6 +27,7 @@ public class Post extends BaseTime {
     @ToString.Exclude
     @Builder.Default
     private List<PostLike> likes = new ArrayList<>();
+    @Column(columnDefinition = "BIGINT default 0")
     @Setter(PROTECTED)
     private long likesCount;
 
@@ -35,6 +36,7 @@ public class Post extends BaseTime {
     @Builder.Default
     @OrderBy("id DESC")
     private List<PostComment> comments = new ArrayList<>();
+    @Column(columnDefinition = "BIGINT default 0")
     @Setter(PROTECTED)
     private long commentsCount;
 
@@ -44,7 +46,9 @@ public class Post extends BaseTime {
     @OneToOne(fetch = LAZY, cascade = ALL)
     @ToString.Exclude
     private PostDetail detailBody;
+    @Column(columnDefinition = "BOOLEAN default false")
     private boolean published;
+    @Column(columnDefinition = "BOOLEAN default false")
     private boolean listed;
 
     public void increaseLikesCount() {
