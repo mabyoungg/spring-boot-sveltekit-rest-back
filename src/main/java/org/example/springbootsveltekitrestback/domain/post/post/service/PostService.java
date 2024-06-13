@@ -32,11 +32,12 @@ public class PostService {
     private final TransactionCache transactionCache;
 
     @Transactional
-    public Post write(Member author, String title, String body, boolean published) {
+    public Post write(Member author, String title, String body, boolean published, boolean listed) {
         Post post = Post.builder()
                 .author(author)
                 .title(title)
                 .published(published)
+                .listed(listed)
                 .build();
 
         postRepository.save(post);
@@ -198,7 +199,7 @@ public class PostService {
                 "임시글"
         ).orElseGet(() -> {
             isNew.set(true);
-            return write(author, "임시글", "", false);
+            return write(author, "임시글", "", false, false);
         });
 
         return RsData.of(

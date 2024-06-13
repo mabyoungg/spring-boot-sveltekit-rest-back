@@ -45,7 +45,7 @@ public class NotProd {
                 Member memberUser4 = memberService.join("user4", "1234").getData();
                 memberUser4.setRefreshToken("user4");
 
-                Post post1 = postService.write(memberUser1, "제목 1", "내용 1", true);
+                Post post1 = postService.write(memberUser1, "제목 1", "내용 1", true, true);
                 post1.addLike(memberUser1);
                 post1.addLike(memberUser2);
                 post1.addLike(memberUser3);
@@ -62,7 +62,7 @@ public class NotProd {
                 post1.addComment(memberUser3, "댓글 9");
                 post1.addComment(memberUser4, "댓글 10");
 
-                Post post2 = postService.write(memberUser1, "제목 2", "내용 2", true);
+                Post post2 = postService.write(memberUser1, "제목 2", "내용 2", true, true);
                 post2.addLike(memberUser1);
                 post2.addLike(memberUser2);
                 post2.addLike(memberUser3);
@@ -78,18 +78,18 @@ public class NotProd {
                 post2.addComment(memberUser2, "댓글 15");
                 post2.addComment(memberUser3, "댓글 16");
 
-                Post post3 = postService.write(memberUser1, "제목 3", "내용 3", false);
+                Post post3 = postService.write(memberUser1, "제목 3", "내용 3", false, false);
                 post3.addLike(memberUser1);
                 post3.addLike(memberUser2);
 
-                Post post4 = postService.write(memberUser1, "제목 4", "내용 4", true);
+                Post post4 = postService.write(memberUser1, "제목 4", "내용 4", true, true);
                 post4.addLike(memberUser1);
 
-                Post post5 = postService.write(memberUser2, "제목 5", "내용 5", true);
-                Post post6 = postService.write(memberUser2, "제목 6", "내용 6", false);
+                Post post5 = postService.write(memberUser2, "제목 5", "내용 5", true, true);
+                Post post6 = postService.write(memberUser2, "제목 6", "내용 6", false, false);
 
-                IntStream.rangeClosed(7, 150).forEach(i -> {
-                    postService.write(memberUser3, "제목 " + i, "내용 " + i, true);
+                IntStream.rangeClosed(7, 1200).forEach(i -> {
+                    postService.write(memberUser3, "제목 " + i, "내용 " + i, true, true);
                 });
             }
         };
